@@ -30,15 +30,52 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - run: terraform init
+
       - name: Validate Terraform
         run: terraform validate
+
       - name: Plan Terraform
         run: terraform plan -var-file=variables.tfvars
+
       - name: Apply Terraform
         run: terraform apply -auto-approve -var-file=variables.tfvars
 
       - name: Save Outputs
-        id: outputs
-        run: |
-          terraform output -json > ../../eks-outputs.json
+        run: terraform output -json > eks-outputs.json
 
+      - name: Upload EKS Outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: eks-outputs
+          path: eks-outputs.json
+
+  stage2:
+    name: Stage 2 - ArgoCD on EKS
+    runs-on: ubuntu-latest
+    needs: stage1
+    defaults:
+      run:
+        working-directory: ./EKS-TF/argocd
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download EKS Outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: eks-outputs
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-oidc-role
+          aws-region: eu-central-1
+
+      - name: Setup Terraform 
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+        
+      - name: Terraform Apply (ArgoCD) 
+        run: terraform apply -auto-approve -var-file=../variables.tfvars -var="cluster_name=$(jq -r '.cluster_name.value' ../eks-outputs.json)"
