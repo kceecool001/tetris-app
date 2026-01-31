@@ -30,7 +30,12 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - run: terraform init
-      - run: terraform apply -auto-approve
+      - name: Validate Terraform
+        run: terraform validate
+      - name: Plan Terraform
+        run: terraform plan -var-file=variables.tfvars
+      - name: Apply Terraform
+        run: terraform apply -auto-approve -var-file=variables.tfvars
 
       - name: Save Outputs
         id: outputs
