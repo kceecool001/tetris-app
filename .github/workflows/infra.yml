@@ -29,7 +29,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
       - name: Validate Terraform
         run: terraform validate
@@ -42,7 +43,6 @@ jobs:
 
       - name: Save Outputs
         run: terraform output -json > eks-outputs.json
-        working-directory: ./EKS-TF
 
       - name: Upload EKS Outputs
         uses: actions/upload-artifact@v4
@@ -79,6 +79,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
         
-      - name: Terraform Apply (ArgoCD) 
-        run: terraform apply -auto-approve \
-            -var="cluster_name=$(jq -r '.cluster_name.value' ../eks-outputs.json)"
+      - name: Terraform Apply (ArgoCD)
+        run: |
+          CLUSTER_NAME=$(jq -r '.eks_cluster_name.value' ../eks-outputs.json)
+          terraform apply -auto-approve -var="cluster_name=$CLUSTER_NAME"
