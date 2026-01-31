@@ -42,12 +42,13 @@ jobs:
 
       - name: Save Outputs
         run: terraform output -json > eks-outputs.json
+        working-directory: ./EKS-TF
 
       - name: Upload EKS Outputs
         uses: actions/upload-artifact@v4
         with:
           name: eks-outputs
-          path: eks-outputs.json
+          path: ./EKS-TF/eks-outputs.json
 
   stage2:
     name: Stage 2 - ArgoCD on EKS
@@ -64,6 +65,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: eks-outputs
+          path: ../
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
