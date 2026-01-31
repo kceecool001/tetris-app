@@ -6,6 +6,18 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "eu-central-1"
+}
+
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
+
 provider "helm" {
   kubernetes = {
     host                   = data.aws_eks_cluster.cluster.endpoint
