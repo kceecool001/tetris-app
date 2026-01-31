@@ -1,16 +1,23 @@
 terraform {
   backend "s3" {
-    bucket       = "dev-aman-tf-bucket"
-    region       = "us-east-1"
-    key          = "End-to-End-Kubernetes-DevSecOps-Tetris-Project/EKS-TF/terraform.tfstate"
-    use_lockfile = true
-    encrypt      = true
+    bucket  = "kcee-dev-tf"
+    region  = "eu-central-1"
+    key     = "tetris-project/terraform.tfstate"
+    encrypt = true
   }
-  required_version = ">=1.14.0"
+  required_version = ">=1.6.6"
   required_providers {
     aws = {
       version = ">= 5.49.0"
       source  = "hashicorp/aws"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.29"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.13"
     }
   }
 }

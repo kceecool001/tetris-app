@@ -1,0 +1,39 @@
+name: Deploy Infrastructure
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  stage1:
+    name: Stage 1 - EKS Cluster
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./EKS-TF
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-oidc-role
+          aws-region: eu-central-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - run: terraform init
+      - run: terraform apply -auto-approve
+
+      - name: Save Outputs
+        id: outputs
+        run: |
+          terraform output -json > ../../eks-outputs.json
+

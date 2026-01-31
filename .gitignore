@@ -1,0 +1,76 @@
+# ============================
+# Terraform
+# ============================
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+terraform.tfvars.json
+
+# Sensitive output files
+eks-outputs.json
+
+# ============================
+# Kubernetes
+# ============================
+# Local kubeconfig files
+kubeconfig
+.kube/
+*.kubeconfig
+
+# ============================
+# Helm
+# ============================
+charts/
+*.tgz
+
+# ============================
+# Docker
+# ============================
+*.tar
+.dockerignore
+
+# ============================
+# Node / Frontend (if Tetris UI uses JS)
+# ============================
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+build/
+
+# ============================
+# Python (if any scripts)
+# ============================
+__pycache__/
+*.pyc
+
+# ============================
+# Logs
+# ============================
+*.log
+logs/
+debug.log
+
+# ============================
+# OS / Editor Files
+# ============================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ============================
+# GitHub Actions
+# ============================
+# (Nothing ignored here unless you generate artifacts)
+actions-runner/
