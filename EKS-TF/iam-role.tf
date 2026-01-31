@@ -49,4 +49,5 @@ resource "kubernetes_config_map" "aws_auth" {
       }
     ])
   }
+  force = true
 }
