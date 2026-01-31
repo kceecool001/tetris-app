@@ -80,4 +80,5 @@ jobs:
         run: terraform init
         
       - name: Terraform Apply (ArgoCD) 
-        run: terraform apply -auto-approve -var-file=../variables.tfvars -var="cluster_name=$(jq -r '.cluster_name.value' ../eks-outputs.json)"
+        run: terraform apply -auto-approve \
+            -var="cluster_name=$(jq -r '.cluster_name.value' ../eks-outputs.json)"
