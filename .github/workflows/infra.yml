@@ -65,7 +65,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: eks-outputs
-          path: ../
+          path: ./EKS-TF
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
