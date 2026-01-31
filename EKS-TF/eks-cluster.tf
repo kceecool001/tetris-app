@@ -10,3 +10,17 @@ resource "aws_eks_cluster" "eks-cluster" {
 
   depends_on = [aws_iam_role_policy_attachment.AmazonEKSClusterPolicy]
 }
+
+data "aws_eks_cluster" "cluster" {
+  name = aws_eks_cluster.eks-cluster.name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.eks-cluster.name
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
