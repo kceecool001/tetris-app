@@ -29,3 +29,24 @@ resource "aws_iam_role" "NodeGroupRole" {
     ]
   })
 }
+
+data "aws_iam_user" "eks_user" {
+  user_name = "eks-user"
+}
+
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapUsers = yamlencode([
+      {
+        userarn  = data.aws_iam_user.eks_user.arn
+        username = "eks-user"
+        groups   = ["system:masters"]
+      }
+    ])
+  }
+}
